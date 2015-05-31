@@ -34,10 +34,10 @@ using System.Reflection;
 
 using KSP.IO;
 
-namespace KerbalStats {
+namespace SurveyTransponder {
 
 	[KSPAddon(KSPAddon.Startup.Instantly, true)]
-	public class FreeEVAVersionReport : MonoBehaviour
+	public class SurveyTransponderVersionReport : MonoBehaviour
 	{
 		static string version = null;
 
