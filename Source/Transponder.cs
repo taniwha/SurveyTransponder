@@ -145,6 +145,8 @@ namespace SurveyTransponder {
 			Deploy ();
 			yield return new WaitForSeconds (0.2f);
 			FlightGlobals.fetch.SetVesselTarget (this);
+			ST_Tracker.instance.AddTransponder (this);
+			part.OnJustAboutToBeDestroyed += OnJustAboutToBeDestroyed;
 		}
 
 		public override void OnActive ()
@@ -152,6 +154,14 @@ namespace SurveyTransponder {
 			if (!deployed) {
 				StartCoroutine (WaitAndTransmit ());
 			}
+		}
+
+		void OnJustAboutToBeDestroyed ()
+		{
+			if (FlightGlobals.fetch.VesselTarget == (ITargetable) this) {
+				FlightGlobals.fetch.SetVesselTarget (null);
+			}
+			ST_Tracker.instance.RemoveTransponder (this);
 		}
 	}
 }
