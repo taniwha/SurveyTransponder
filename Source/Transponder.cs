@@ -113,19 +113,16 @@ namespace SurveyTransponder {
 				foreach (AnimationState astate in Anim) {
 					Debug.Log (String.Format ("[ST OnStart] {0}", astate.name));
 				}
-				print ("a '" + deployAnimation + "'");
 				if (!deployed) {
 					Anim[deployAnimation].normalizedTime = 0;
 					Anim[deployAnimation].normalizedSpeed = 0;
 				} else {
 					Anim[deployAnimation].normalizedTime = 1;
 					Anim[deployAnimation].normalizedSpeed = 0;
+					ST_Tracker.instance.AddTransponder (this);
 				}
-				print ("b");
 				Anim[deployAnimation].enabled = true;
-				print ("c");
 				Anim.Play (deployAnimation);
-				print ("d");
 			}
 		}
 
@@ -146,7 +143,6 @@ namespace SurveyTransponder {
 			yield return new WaitForSeconds (0.2f);
 			FlightGlobals.fetch.SetVesselTarget (this);
 			ST_Tracker.instance.AddTransponder (this);
-			part.OnJustAboutToBeDestroyed += OnJustAboutToBeDestroyed;
 		}
 
 		public override void OnActive ()
@@ -156,12 +152,14 @@ namespace SurveyTransponder {
 			}
 		}
 
-		void OnJustAboutToBeDestroyed ()
+		void OnDestroy ()
 		{
 			if (FlightGlobals.fetch.VesselTarget == (ITargetable) this) {
 				FlightGlobals.fetch.SetVesselTarget (null);
 			}
-			ST_Tracker.instance.RemoveTransponder (this);
+			if (ST_Tracker.instance != null) {
+				ST_Tracker.instance.RemoveTransponder (this);
+			}
 		}
 	}
 }

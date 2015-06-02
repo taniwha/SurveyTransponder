@@ -85,13 +85,18 @@ namespace SurveyTransponder {
 			private set;
 		}
 
+		static Rect winpos;
+		static GUIStyle normal;
+		static GUIStyle no_signal;
+		static bool styles_init;
+
 		Dictionary<uint, TransponderInfo> transponders;
 
 		void Awake ()
 		{
+			//Debug.Log ("[ST Tracker] Awake");
 			transponders = new Dictionary<uint, TransponderInfo> ();
 			instance = this;
-			enabled = false;
 		}
 
 		void OnDestroy ()
@@ -101,6 +106,8 @@ namespace SurveyTransponder {
 
 		void Start ()
 		{
+			//Debug.Log ("[ST Tracker] Start");
+			enabled = false;
 			StartCoroutine (ScanTransponders ());
 		}
 
@@ -108,36 +115,88 @@ namespace SurveyTransponder {
 		{
 			while (true) {
 				while (transponders.Count < 1) {
+					//Debug.Log (String.Format ("[ST Tracker] ScanTransponders: {0}", 0));
 					yield return null;
 				}
+				//Debug.Log (String.Format ("[ST Tracker] ScanTransponders a: {0}", transponders.Count));
 				List<uint> keys = new List<uint> (transponders.Keys);
 				for (int i = 0; i < keys.Count; i++) {
 					uint id = keys[i];
 					double UT = Planetarium.GetUniversalTime ();
 					if (transponders[id].transponder == null &&
 						UT - transponders[id].lostContact > 10) {
+						Debug.Log (String.Format ("[ST Tracker] Remove Transponder: {0} {1} {2} {3}", transponders[id].name, UT, transponders[id].lostContact, UT - transponders[id].lostContact));
 						transponders.Remove (id);
 					} else {
 						transponders[id].Update ();
 					}
 					yield return null;
 				}
+				//Debug.Log (String.Format ("[ST Tracker] ScanTransponders b: {0}", transponders.Count));
 				enabled = transponders.Count > 0;
 			}
 		}
 
-		void Update ()
+		void InfoWindow (int windowID)
 		{
-			if (transponders.Count < 1) {
-				enabled = false;
-				return;
+			GUILayout.BeginVertical ();
+
+			List<uint> keys = new List<uint> (transponders.Keys);
+			keys.Sort ();
+			for (int i = 0; i < keys.Count; i++) {
+				TransponderInfo ti = transponders[keys[i]];
+
+				GUIStyle style = normal;
+				if (ti.transponder == null) {
+					style = no_signal;
+				}
+
+				GUILayout.BeginHorizontal ();
+				GUILayout.Label (ti.name, style);
+				GUILayout.FlexibleSpace ();
+				GUILayout.Label (ti.situation.ToString (), style);
+				GUILayout.FlexibleSpace ();
+				GUILayout.Label (String.Format ("{0:F0}", ti.altitude), style);
+				GUILayout.FlexibleSpace();
+				GUILayout.Label (String.Format ("{0:F0}", ti.velocity), style);
+				GUILayout.EndHorizontal ();
 			}
-			enabled = true;
+
+			GUILayout.EndVertical ();
+			GUI.DragWindow ();
+		}
+
+		void OnGUI ()
+		{
+			if (winpos.x == 0 && winpos.y == 0) {
+				winpos.x = 10;
+				winpos.y = 10;
+				winpos.width = 300;
+				winpos.height = 100;
+			}
+			if (!styles_init) {
+				styles_init = true;
+
+				normal = new GUIStyle (GUI.skin.box);
+				normal.padding = new RectOffset (8, 8, 8, 8);
+				normal.normal.textColor = Color.white;
+				normal.focused.textColor = Color.white;
+
+				no_signal = new GUIStyle (GUI.skin.box);
+				no_signal = new GUIStyle (GUI.skin.box);
+				no_signal.padding = new RectOffset (8, 8, 8, 8);
+				no_signal.normal.textColor = Color.red;
+			}
+			string ver = SurveyTransponderVersionReport.GetVersion ();
+			winpos = GUILayout.Window (GetInstanceID (), winpos, InfoWindow,
+									   "Transponder State: " + ver,
+									   GUILayout.MinWidth (200));
 		}
 
 		public void AddTransponder (ST_Transponder ponder)
 		{
 			uint id = ponder.part.flightID;
+			//Debug.Log (String.Format ("[ST Tracker] AddTransponder: {0}", id));
 			if (transponders.ContainsKey (id)) {
 				// may have temporarlily lost contact
 				transponders[id].transponder = ponder;
@@ -149,10 +208,12 @@ namespace SurveyTransponder {
 		public void RemoveTransponder (ST_Transponder ponder)
 		{
 			uint id = ponder.part.flightID;
+			Debug.Log (String.Format ("[ST Tracker] RemoveTransponder: {0}", id));
 			if (!transponders.ContainsKey (id)) {
 				return;
 			}
 			double UT = Planetarium.GetUniversalTime ();
+			Debug.Log (String.Format ("[ST Tracker] RemoveTransponder: {0} {1}", transponders[id].transponder, UT));
 			if (transponders[id].transponder != null) {
 				transponders[id].transponder = null;
 				transponders[id].lostContact = UT;
