@@ -14,9 +14,11 @@ ST_FILES := \
 	$e
 
 DOC_FILES := \
-	SurveyTransponder.png \
-	License.txt \
-	README.md
+	../License.txt \
+	$e
+
+#	SurveyTransponder.png
+#	README.md
 
 RESGEN2		:= resgen2
 GMCS		:= gmcs
@@ -55,6 +57,6 @@ clean:
 install: all
 	mkdir -p ${PLUGINDIR}
 	cp ${TARGETS} ${PLUGINDIR}
-	#cp ${DOC_FILES} ${STGAMEDATA}
+	cp ${DOC_FILES} ${STGAMEDATA}
 
 .PHONY: all clean install
