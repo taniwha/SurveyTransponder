@@ -154,7 +154,8 @@ namespace SurveyTransponder {
 
 		void OnDestroy ()
 		{
-			if (FlightGlobals.fetch.VesselTarget == (ITargetable) this) {
+			if (FlightGlobals.fetch != null &&
+				FlightGlobals.fetch.VesselTarget == (ITargetable) this) {
 				FlightGlobals.fetch.SetVesselTarget (null);
 			}
 			if (ST_Tracker.instance != null) {
