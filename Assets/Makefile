@@ -27,10 +27,10 @@ info:
 	@echo "    KSP Data:   ${KSPDIR}"
 
 icon_tgt_targeted.png: icon_target.svg
-	sed -e 's/\#ffffff/\#ff48ff/g' $^ | inkscape --export-width=64 --export-height=64 --export-background='#000000' --export-background-opacity=0 --export-png=$@ /dev/stdin
+	sed -e 's/\#ffffff/\#ff48ff/g' $^ | inkscape --export-width=16 --export-height=16 --export-background='#000000' --export-background-opacity=0 --export-png=$@ /dev/stdin
 
 icon_tgt_idle.png: icon_target.svg
-	inkscape --export-width=64 --export-height=64 --export-background='#000000' --export-background-opacity=0 --export-png=$@ $^
+	inkscape --export-width=16 --export-height=16 --export-background='#000000' --export-background-opacity=0 --export-png=$@ $^
 
 clean:
 	rm -f ${ICONS}
