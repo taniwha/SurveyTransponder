@@ -8,6 +8,7 @@ TARGETS		:= SurveyTransponder.dll
 
 ST_FILES := \
     AssemblyInfo.cs	\
+	RenameWindow.cs \
 	Transponder.cs \
 	Tracker.cs \
 	VersionReport.cs \

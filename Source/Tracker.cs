@@ -85,9 +85,16 @@ namespace SurveyTransponder {
 			private set;
 		}
 
+		static string texture_path = KSPUtil.ApplicationRootPath.Replace("\\", "/") + "GameData/SurveyTransponder/Textures";
+		static Texture2D icon_tgt_idle;
+		static Texture2D icon_tgt_targeted;
+
+
 		static Rect winpos;
 		static GUIStyle normal;
 		static GUIStyle no_signal;
+		static GUIContent tgt_idle;
+		static GUIContent tgt_targeted;
 		static bool styles_init;
 
 		Dictionary<uint, TransponderInfo> transponders;
@@ -145,13 +152,26 @@ namespace SurveyTransponder {
 			keys.Sort ();
 			for (int i = 0; i < keys.Count; i++) {
 				TransponderInfo ti = transponders[keys[i]];
+				bool targeted = false;
 
 				GUIStyle style = normal;
 				if (ti.transponder == null) {
 					style = no_signal;
+				} else {
+					targeted = FlightGlobals.fetch.VesselTarget == (ti.transponder as ITargetable);
 				}
 
 				GUILayout.BeginHorizontal ();
+				if (targeted) {
+					if (GUILayout.Button (tgt_targeted, style)) {
+						FlightGlobals.fetch.SetVesselTarget (null);
+					}
+				} else {
+					if (GUILayout.Button (tgt_idle, style)) {
+						FlightGlobals.fetch.SetVesselTarget (ti.transponder);
+					}
+				}
+				GUILayout.FlexibleSpace ();
 				GUILayout.Label (ti.name, style);
 				GUILayout.FlexibleSpace ();
 				GUILayout.Label (ti.situation.ToString (), style);
@@ -176,6 +196,15 @@ namespace SurveyTransponder {
 			}
 			if (!styles_init) {
 				styles_init = true;
+
+				icon_tgt_idle = new Texture2D(16, 16, TextureFormat.ARGB32, false);
+				icon_tgt_targeted = new Texture2D(16, 16, TextureFormat.ARGB32, false);
+
+				LoadImageFromFile (ref icon_tgt_idle, "icon_tgt_idle.png");
+				LoadImageFromFile (ref icon_tgt_targeted, "icon_tgt_targeted.png");
+
+				tgt_idle = new GUIContent (icon_tgt_idle, "Set as target");
+				tgt_targeted = new GUIContent (icon_tgt_targeted, "Unset as target");
 
 				normal = new GUIStyle (GUI.skin.box);
 				normal.padding = new RectOffset (8, 8, 8, 8);
@@ -219,5 +248,17 @@ namespace SurveyTransponder {
 				transponders[id].lostContact = UT;
 			}
 		}
+
+        public static bool LoadImageFromFile(ref Texture2D tex, String filename)
+        {
+            bool ret = false;
+			string path = texture_path + "/" + filename;
+
+			if (System.IO.File.Exists(path)) {
+				tex.LoadImage(System.IO.File.ReadAllBytes(path));
+				ret = true;
+			}
+            return ret;
+        }
 	}
 }
