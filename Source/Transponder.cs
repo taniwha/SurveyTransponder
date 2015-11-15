@@ -180,7 +180,7 @@ namespace SurveyTransponder {
 			ST_RenameWindow.ShowGUI (this);
 		}
 
-		[KSPEvent (guiActive = true, guiActiveEditor = true,
+		[KSPEvent (guiActive = true, guiActiveEditor = false,
 				   guiName = "Disable Transponder", active = true,
 				   externalToEVAOnly = true, guiActiveUnfocused = true,
 				   unfocusedRange = 2)]
