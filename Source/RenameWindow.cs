@@ -47,6 +47,7 @@ namespace SurveyTransponder {
 		{
 			if (windowInstance != null) {
 				windowInstance.enabled = false;
+				InputLockManager.RemoveControlLock ("ST_Rename_window_lock");
 			}
 		}
 
@@ -72,11 +73,11 @@ namespace SurveyTransponder {
 			GUILayout.FlexibleSpace ();
 			if (GUILayout.Button ("OK")) {
 				xpondInstance.SetName (newName);
-				enabled = false;
+				HideGUI ();
 			}
 			GUILayout.FlexibleSpace ();
 			if (GUILayout.Button ("Cancel")) {
-				enabled = false;
+				HideGUI ();
 			}
 			GUILayout.FlexibleSpace ();
 			GUILayout.EndHorizontal ();
