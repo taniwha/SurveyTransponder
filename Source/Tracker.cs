@@ -50,6 +50,7 @@ namespace SurveyTransponder {
 					return;
 				}
 				Vessel vsl = transponder.vessel;
+				name = vsl.vesselName;
 
 				altitude = vsl.altitude;
 				situation = vsl.situation;
