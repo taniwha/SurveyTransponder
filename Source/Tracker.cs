@@ -177,9 +177,13 @@ namespace SurveyTransponder {
 				GUILayout.FlexibleSpace ();
 				GUILayout.Label (ti.situation.ToString (), style);
 				GUILayout.FlexibleSpace ();
-				GUILayout.Label (String.Format ("{0:F0}", ti.altitude), style);
-				GUILayout.FlexibleSpace();
-				GUILayout.Label (String.Format ("{0:F0}", ti.velocity), style);
+				if (ti.transponder != null) {
+					GUILayout.Label (String.Format ("{0:F0}", ti.altitude), style);
+					GUILayout.FlexibleSpace();
+					GUILayout.Label (String.Format ("{0:F0}", ti.velocity), style);
+				} else {
+					GUILayout.Label ("no signal", style);
+				}
 				GUILayout.EndHorizontal ();
 			}
 
