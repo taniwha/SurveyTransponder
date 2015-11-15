@@ -160,13 +160,7 @@ namespace SurveyTransponder {
 
 		void OnDestroy ()
 		{
-			if (FlightGlobals.fetch != null &&
-				FlightGlobals.fetch.VesselTarget == (ITargetable) this) {
-				FlightGlobals.fetch.SetVesselTarget (null);
-			}
-			if (ST_Tracker.instance != null) {
-				ST_Tracker.instance.RemoveTransponder (this);
-			}
+			Disable ();
 		}
 
 		public void SetName (string name)
@@ -184,6 +178,22 @@ namespace SurveyTransponder {
 		public void ShowRenameUI ()
 		{
 			ST_RenameWindow.ShowGUI (this);
+		}
+
+		[KSPEvent (guiActive = true, guiActiveEditor = true,
+				   guiName = "Disable Transponder", active = true,
+				   externalToEVAOnly = true, guiActiveUnfocused = true,
+				   unfocusedRange = 2)]
+		public void Disable ()
+		{
+			if (FlightGlobals.fetch != null &&
+				FlightGlobals.fetch.VesselTarget == (ITargetable) this) {
+				FlightGlobals.fetch.SetVesselTarget (null);
+			}
+			if (ST_Tracker.instance != null) {
+				ST_Tracker.instance.RemoveTransponder (this);
+			}
+			Events["Disable"].active = false;
 		}
 	}
 }
