@@ -63,6 +63,12 @@ namespace SurveyTransponder {
 			}
 			foreach (var survey_def in survey.GetNodes ("SURVEY_DEFINITION")) {
 				foreach (var param in survey_def.GetNodes ("PARAM")) {
+					if (param.GetValue ("Experiment") == "seismicScan") {
+						// seismic scans cannot be done when splashed.
+						continue;
+					}
+					// nor can atmosphric analysis scans, but the can't be done
+					// on the ground, either.
 					if (param.HasValue ("AllowGround")
 					    && param.GetValue ("AllowGround") == "True"
 						&& param.HasValue ("AllowWater")) {
