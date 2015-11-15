@@ -65,7 +65,6 @@ namespace SurveyTransponder {
 			GUILayout.BeginVertical ();
 
 			GUILayout.BeginHorizontal ();
-			GUILayout.Label ("Rename launchpad: ");
 			newName = GUILayout.TextField (newName);
 			GUILayout.EndHorizontal ();
 
@@ -92,7 +91,7 @@ namespace SurveyTransponder {
 		{
 			GUI.skin = HighLogic.Skin;
 			windowpos = GUILayout.Window (GetInstanceID (), windowpos,
-										  WindowGUI, "Rename Launchpad",
+										  WindowGUI, "Rename Transponder",
 										  GUILayout.Width(500));
 			if (windowpos.Contains (new Vector2 (Input.mousePosition.x, Screen.height - Input.mousePosition.y))) {
 				InputLockManager.SetControlLock ("ST_Rename_window_lock");
