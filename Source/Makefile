@@ -47,7 +47,9 @@ info:
 
 SurveyTransponder.dll: ${ST_FILES}
 	${GMCS} ${GMCSFLAGS} -t:library -lib:${MANAGED} \
-		-r:Assembly-CSharp,Assembly-CSharp-firstpass,UnityEngine \
+		-r:Assembly-CSharp,Assembly-CSharp-firstpass \
+		-r:UnityEngine,UnityEngine.UI \
+		-r:KSPUtil \
 		-out:$@ $^
 
 #SurveyTransponder.png: SurveyTransponder.svg
