@@ -10,6 +10,7 @@ ST_FILES := \
 	AllowWater.cs \
 	AssemblyInfo.cs	\
 	RenameWindow.cs \
+	StagedAnimation.cs \
 	Transponder.cs \
 	Tracker.cs \
 	VersionReport.cs \
