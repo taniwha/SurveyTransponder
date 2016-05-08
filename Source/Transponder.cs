@@ -26,16 +26,11 @@ namespace SurveyTransponder {
 
 	public class ST_Transponder : PartModule, IModuleInfo, ITargetable
 	{
-		Animation Anim;
-
 		[KSPField(isPersistant = true)]
 		public bool deployed;
 
 		[KSPField(isPersistant = true)]
 		public string transponderName;
-
-		[KSPField (isPersistant = false)]
-		public string deployAnimation;
 
 		public override string GetInfo ()
 		{
@@ -109,23 +104,8 @@ namespace SurveyTransponder {
 		public override void OnStart(PartModule.StartState state)
 		{
 			part.stagingIcon = "PROBE";
-			Animation[] animations = part.GetComponentsInChildren<Animation>();
-			if (animations != null) {
-				Anim = animations[0];
-				Anim.wrapMode = WrapMode.Once;
-				foreach (AnimationState astate in Anim) {
-					Debug.Log (String.Format ("[ST OnStart] {0}", astate.name));
-				}
-				if (!deployed) {
-					Anim[deployAnimation].normalizedTime = 0;
-					Anim[deployAnimation].normalizedSpeed = 0;
-				} else {
-					Anim[deployAnimation].normalizedTime = 1;
-					Anim[deployAnimation].normalizedSpeed = 0;
-					ST_Tracker.instance.AddTransponder (this);
-				}
-				Anim[deployAnimation].enabled = true;
-				Anim.Play (deployAnimation);
+			if (deployed) {
+				ST_Tracker.instance.AddTransponder (this);
 			}
 		}
 
@@ -133,9 +113,6 @@ namespace SurveyTransponder {
 		{
 			if (!deployed) {
 				deployed = true;
-				Anim[deployAnimation].speed = 1;
-				Anim[deployAnimation].enabled = true;
-				Anim.Play (deployAnimation);
 				if (!string.IsNullOrEmpty (transponderName)) {
 					vessel.vesselName = transponderName;
 				}
