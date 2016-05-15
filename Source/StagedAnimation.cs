@@ -31,9 +31,8 @@ namespace SurveyTransponder {
 		[KSPField(isPersistant = true)]
 		public bool deployed;
 
-
 		[KSPField (isPersistant = false)]
-		public string deployAnimation;
+		public string deployAnimationName;
 
 		public override string GetInfo ()
 		{
@@ -77,16 +76,16 @@ namespace SurveyTransponder {
 			FindAnimation ();
 			if (Anim != null) {
 				if (!deployed) {
-					Anim[deployAnimation].normalizedTime = 0;
-					Anim[deployAnimation].normalizedSpeed = 0;
+					Anim[deployAnimationName].normalizedTime = 0;
+					Anim[deployAnimationName].normalizedSpeed = 0;
 					SetDragState (0);
 				} else {
-					Anim[deployAnimation].normalizedTime = 1;
-					Anim[deployAnimation].normalizedSpeed = 0;
+					Anim[deployAnimationName].normalizedTime = 1;
+					Anim[deployAnimationName].normalizedSpeed = 0;
 					SetDragState (1);
 				}
-				Anim[deployAnimation].enabled = true;
-				Anim.Play (deployAnimation);
+				Anim[deployAnimationName].enabled = true;
+				Anim.Play (deployAnimationName);
 			}
 		}
 
@@ -95,9 +94,9 @@ namespace SurveyTransponder {
 			if (!deployed) {
 				deployed = true;
 				if (Anim != null) {
-					Anim[deployAnimation].speed = 1;
-					Anim[deployAnimation].enabled = true;
-					Anim.Play (deployAnimation);
+					Anim[deployAnimationName].speed = 1;
+					Anim[deployAnimationName].enabled = true;
+					Anim.Play (deployAnimationName);
 				}
 			}
 		}
@@ -106,8 +105,8 @@ namespace SurveyTransponder {
 		{
 			if (Anim != null) {
 				float t;
-				if (Anim.IsPlaying (deployAnimation)) {
-					t = Anim[deployAnimation].normalizedTime;
+				if (Anim.IsPlaying (deployAnimationName)) {
+					t = Anim[deployAnimationName].normalizedTime;
 				} else {
 					t = deployed ? 1 : 0;
 				}
@@ -147,17 +146,17 @@ namespace SurveyTransponder {
 		{
 			FindAnimation ();
 			if (Anim != null) {
-				Anim[deployAnimation].speed = 0f;
-				Anim[deployAnimation].enabled = true;
-				Anim[deployAnimation].weight = 1f;
+				Anim[deployAnimationName].speed = 0f;
+				Anim[deployAnimationName].enabled = true;
+				Anim[deployAnimationName].weight = 1f;
 
 				switch (name)
 				{
 					case "A":
-						Anim[deployAnimation].normalizedTime = 1f;
+						Anim[deployAnimationName].normalizedTime = 1f;
 						break;
 					case "B":
-						Anim[deployAnimation].normalizedTime = 0f;
+						Anim[deployAnimationName].normalizedTime = 0f;
 						break;
 				}
 			}
