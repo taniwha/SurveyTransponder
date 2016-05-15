@@ -31,8 +31,6 @@ namespace SurveyTransponder {
 		[KSPField(isPersistant = true)]
 		public bool deployed;
 
-		[KSPField(isPersistant = true)]
-		public string transponderName;
 
 		[KSPField (isPersistant = false)]
 		public string deployAnimation;
