@@ -92,6 +92,11 @@ namespace SurveyTransponder {
 		{
 			return VesselTargetModes.DirectionAndVelocity;
 		}
+		public bool GetActiveTargetable()
+		{
+			return false;
+		}
+
 
 		public void FixedUpdate ()
 		{
