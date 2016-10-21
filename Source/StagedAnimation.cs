@@ -166,5 +166,7 @@ namespace SurveyTransponder {
 		{
 			return false;
 		}
+
+		public bool IsMultipleCubesActive { get { return true; } }
 	}
 }
