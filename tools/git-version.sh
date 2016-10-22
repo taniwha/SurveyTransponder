@@ -1,6 +1,6 @@
 #! /bin/sh
 
-full_version=`./git-version-gen --prefix v .tarball-version`
+full_version=`../tools/git-version-gen --prefix v .tarball-version`
 version=`echo $full_version | sed -e 's/-/\t/' | cut -f 1 | sed -e 's/UNKNOWN/0.0.0/'` 
 
 sed -e "s/@FULL_VERSION@/$full_version/" -e "s/@VERSION@/$version/" AssemblyInfo.in > AssemblyInfo.cs-

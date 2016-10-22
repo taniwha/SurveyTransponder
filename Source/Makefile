@@ -34,7 +34,7 @@ all: version ${TARGETS} #SurveyTransponder.png
 
 .PHONY: version
 version:
-	@./git-version.sh
+	@../tools/git-version.sh
 
 info:
 	@echo "SurveyTransponder Build Information"
