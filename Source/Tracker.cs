@@ -99,16 +99,33 @@ namespace SurveyTransponder {
 		static bool styles_init;
 
 		Dictionary<uint, TransponderInfo> transponders;
+		bool showUI = true;
+
+		void onHideUI ()
+		{
+			showUI = false;
+			enabled = false;
+		}
+
+		void onShowUI ()
+		{
+			showUI = true;
+			enabled = showUI && transponders.Count > 0;
+		}
 
 		void Awake ()
 		{
 			//Debug.Log ("[ST Tracker] Awake");
 			transponders = new Dictionary<uint, TransponderInfo> ();
+			GameEvents.onHideUI.Add (onHideUI);
+			GameEvents.onShowUI.Add (onShowUI);
 			instance = this;
 		}
 
 		void OnDestroy ()
 		{
+			GameEvents.onHideUI.Remove (onHideUI);
+			GameEvents.onShowUI.Remove (onShowUI);
 			instance = null;
 		}
 
@@ -141,7 +158,7 @@ namespace SurveyTransponder {
 					yield return null;
 				}
 				//Debug.Log (String.Format ("[ST Tracker] ScanTransponders b: {0}", transponders.Count));
-				enabled = transponders.Count > 0;
+				enabled = showUI && transponders.Count > 0;
 			}
 		}
 
