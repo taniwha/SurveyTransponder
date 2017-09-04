@@ -61,6 +61,10 @@ namespace SurveyTransponder {
 		{
 			return vessel.vesselName;
 		}
+		public string GetDisplayName ()
+		{
+			return vessel.vesselName;
+		}
 		public Vector3 GetObtVelocity ()
 		{
 			return vessel.obt_velocity;
