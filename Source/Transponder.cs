@@ -32,6 +32,9 @@ namespace SurveyTransponder {
 		[KSPField(isPersistant = true)]
 		public string transponderName;
 
+        [KSPField]
+        public bool stagingIcon = true;
+
 		public override string GetInfo ()
 		{
 			return "Transponder";
@@ -112,7 +115,8 @@ namespace SurveyTransponder {
 
 		public override void OnStart(PartModule.StartState state)
 		{
-			part.stagingIcon = "PROBE";
+            if (stagingIcon)
+			    part.stagingIcon = "PROBE";
 			if (deployed) {
 				ST_Tracker.instance.AddTransponder (this);
 			}
