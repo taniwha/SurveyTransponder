@@ -191,7 +191,6 @@ namespace SurveyTransponder {
 				if (deployed && Anim != null) {
 					ret = extended ? 1 : 0;
 				}
-				Debug.Log($"[StagedAnimation] GetScalar: {ret} {extended}");
 				return ret;
 			}
 		}
