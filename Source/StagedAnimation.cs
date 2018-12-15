@@ -24,15 +24,19 @@ using KSP.IO;
 
 namespace SurveyTransponder {
 
-	public class ST_StagedAnimation : PartModule, IModuleInfo, IMultipleDragCube
+	public class ST_StagedAnimation : PartModule, IModuleInfo, IMultipleDragCube, IScalarModule
 	{
 		Animation Anim = null;
 
 		[KSPField(isPersistant = true)]
 		public bool deployed;
+		bool extended;
 
 		[KSPField (isPersistant = false)]
 		public string deployAnimationName;
+
+		private EventData<float, float> onMove;
+		private EventData<float> onStop;
 
 		public override string GetInfo ()
 		{
@@ -56,6 +60,8 @@ namespace SurveyTransponder {
 
 		public override void OnAwake ()
 		{
+			onMove = new EventData<float, float> (part.partName + "_" + part.flightID + "_" + part.Modules.IndexOf(this) + "_onMove");
+			onStop = new EventData<float> (part.partName + "_" + part.flightID + "_" + part.Modules.IndexOf(this) + "_onStop");
 		}
 
 		void FindAnimation()
@@ -74,12 +80,14 @@ namespace SurveyTransponder {
 		{
 			part.stagingIcon = "PROBE";
 			FindAnimation ();
+			extended = false;
 			if (Anim != null) {
 				if (!deployed) {
 					Anim[deployAnimationName].normalizedTime = 0;
 					Anim[deployAnimationName].normalizedSpeed = 0;
 					SetDragState (0);
 				} else {
+					extended = true;
 					Anim[deployAnimationName].normalizedTime = 1;
 					Anim[deployAnimationName].normalizedSpeed = 0;
 					SetDragState (1);
@@ -97,6 +105,7 @@ namespace SurveyTransponder {
 					Anim[deployAnimationName].speed = 1;
 					Anim[deployAnimationName].enabled = true;
 					Anim.Play (deployAnimationName);
+					onMove.Fire (0, 1);
 				}
 			}
 		}
@@ -105,12 +114,16 @@ namespace SurveyTransponder {
 		{
 			if (Anim != null) {
 				float t;
-				if (Anim.IsPlaying (deployAnimationName)) {
-					t = Anim[deployAnimationName].normalizedTime;
-				} else {
-					t = deployed ? 1 : 0;
+				if (deployed && !extended) {
+					if (Anim.IsPlaying (deployAnimationName)) {
+						t = Anim[deployAnimationName].normalizedTime;
+					} else {
+						t = deployed ? 1 : 0;
+						extended = deployed;
+						onStop.Fire (t);
+					}
+					SetDragState (t);
 				}
-				SetDragState (t);
 			}
 		}
 
@@ -168,5 +181,32 @@ namespace SurveyTransponder {
 		}
 
 		public bool IsMultipleCubesActive { get { return true; } }
+
+		[KSPField] public string moduleID = "stagedAnimation";
+		public string ScalarModuleID { get { return moduleID; } }
+		public float GetScalar
+		{
+			get {
+				float ret = 0;
+				if (deployed && Anim != null) {
+					ret = extended ? 1 : 0;
+				}
+				Debug.Log($"[StagedAnimation] GetScalar: {ret} {extended}");
+				return ret;
+			}
+		}
+		public bool CanMove { get { return true; } }
+		public void SetScalar(float t) { }
+		public void SetUIRead(bool state) { }
+		public void SetUIWrite(bool state) { }
+		public bool IsMoving()
+		{
+			return (deployed && Anim != null
+					&& Anim[deployAnimationName].normalizedTime < 1);
+		}
+		public EventData<float, float> OnMoving
+		{ get { return onMove; } }
+		public EventData<float> OnStop
+		{ get { return onStop; } }
 	}
 }
