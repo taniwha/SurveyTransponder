@@ -49,7 +49,7 @@ info:
 SurveyTransponder.dll: ${ST_FILES}
 	${GMCS} ${GMCSFLAGS} -t:library -lib:${MANAGED} \
 		-r:Assembly-CSharp,Assembly-CSharp-firstpass \
-		-r:UnityEngine,UnityEngine.UI \
+		-r:UnityEngine,UnityEngine.UI,UnityEngine.CoreModule,UnityEngine.AnimationModule,UnityEngine.IMGUIModule,UnityEngine.PhysicsModule,UnityEngine.InputLegacyModule,UnityEngine.ImageConversionModule \
 		-out:$@ $^
 
 #SurveyTransponder.png: SurveyTransponder.svg

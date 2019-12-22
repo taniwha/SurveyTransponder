@@ -277,7 +277,7 @@ namespace SurveyTransponder {
 			string path = texture_path + "/" + filename;
 
 			if (System.IO.File.Exists(path)) {
-				tex.LoadImage(System.IO.File.ReadAllBytes(path));
+				ImageConversion.LoadImage(tex, System.IO.File.ReadAllBytes(path));
 				ret = true;
 			}
             return ret;
